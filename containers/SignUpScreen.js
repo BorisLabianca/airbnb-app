@@ -61,7 +61,7 @@ const SignUpScreen = ({ setToken }) => {
       console.log(response.data.token);
       setToken(response.data.token);
       setLoading(false);
-      alert("Vous êtes désormais inscrit.");
+      // alert("Vous êtes désormais inscrit.");
     } catch (error) {
       console.log(error.response.data);
       if (error.response.data.error === "This email already has an account.") {

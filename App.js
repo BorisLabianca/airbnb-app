@@ -87,8 +87,6 @@ export default function App() {
                         name="Room"
                         options={{
                           title: "Room",
-                          headerStyle: { backgroundColor: "red" },
-                          headerTitleStyle: { color: "white" },
                         }}
                       >
                         {() => <RoomScreen />}

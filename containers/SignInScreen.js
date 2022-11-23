@@ -42,7 +42,7 @@ const SignInScreen = ({ setToken }) => {
       // console.log(response.data);
       setToken(response.data.token);
       setLoading(false);
-      alert("Vous êtes connecté.");
+      // alert("Vous êtes connecté.");
     } catch (error) {
       console.log(error.response.data);
       if (error.message === "Request failed with status code 401") {
