@@ -7,13 +7,16 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
+  ActivityIndicator,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 
-const SignInScreen = ({ navigation }) => {
+const SignInScreen = ({ setToken }) => {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [errorMessage, setErrorMessage] = useState("");
@@ -36,11 +39,12 @@ const SignInScreen = ({ navigation }) => {
         }
       );
 
-      console.log(response);
+      // console.log(response.data);
+      setToken(response.data.token);
       setLoading(false);
       alert("Vous êtes connecté.");
     } catch (error) {
-      console.log(error.message);
+      console.log(error.response.data);
       if (error.message === "Request failed with status code 401") {
         setErrorMessage("Mauvaise combinaison mot de passe / adresse e-mail");
         setLoading(false);
@@ -67,6 +71,8 @@ const SignInScreen = ({ navigation }) => {
           placeholder="email"
           textContentType="emailAddress"
           style={styles.input}
+          value={email}
+          autoCapitalize="none"
           onChangeText={(email) => {
             setEmail(email);
           }}
@@ -76,6 +82,8 @@ const SignInScreen = ({ navigation }) => {
           textContentType="password"
           secureTextEntry={passwordVisible ? false : true}
           style={styles.input}
+          value={password}
+          autoCapitalize="none"
           onChangeText={(password) => {
             setPassword(password);
           }}

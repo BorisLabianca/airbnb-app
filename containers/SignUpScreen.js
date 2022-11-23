@@ -7,13 +7,17 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 
-const SignUpScreen = ({ navigation }) => {
+const SignUpScreen = ({ setToken }) => {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
@@ -54,120 +58,138 @@ const SignUpScreen = ({ navigation }) => {
         }
       );
 
-      console.log(response);
+      console.log(response.data.token);
+      setToken(response.data.token);
       setLoading(false);
       alert("Vous êtes désormais inscrit.");
     } catch (error) {
-      console.log(error.message);
-      if (error.message === "Request failed with status code 400") {
-        setErrorMessage("Adresse e-mail ou username déjà utilisé.");
+      console.log(error.response.data);
+      if (error.response.data.error === "This email already has an account.") {
+        setErrorMessage("Cette adresse e-mail est déjà utilisée.");
+        setLoading(false);
+      }
+      if (
+        error.response.data.error === "This username already has an account."
+      ) {
+        setErrorMessage("Ce nom d'utilisateur est déjà utilisé.");
         setLoading(false);
       }
     }
   };
 
   return (
-    <KeyboardAwareScrollView style={styles.main}>
-      <View style={styles.container}>
-        <Image
-          source={require("../assets/airbnb_logo.png")}
-          style={styles.logo}
-        />
-        <Text>Sign up</Text>
-        {loading ? (
-          <ActivityIndicator
-            size="large"
-            color="purple"
-            style={{ marginTop: 200, position: "absolute" }}
+    <ScrollView style={styles.main}>
+      <KeyboardAwareScrollView>
+        <View style={styles.container}>
+          <Image
+            source={require("../assets/airbnb_logo.png")}
+            style={styles.logo}
           />
-        ) : null}
-        <TextInput
-          placeholder="email"
-          textContentType="emailAddress"
-          style={styles.input}
-          onChangeText={(email) => {
-            setEmail(email);
-          }}
-        ></TextInput>
-        <TextInput
-          placeholder="username"
-          textContentType="username"
-          style={styles.input}
-          onChangeText={(username) => {
-            setUsername(username);
-          }}
-        ></TextInput>
-        <TextInput
-          placeholder="Describe yourself in a few words..."
-          style={styles.description}
-          onChangeText={(description) => {
-            setDescription(description);
-          }}
-        ></TextInput>
-        <TextInput
-          placeholder="password"
-          textContentType="password"
-          secureTextEntry={passwordVisible ? false : true}
-          style={styles.input}
-          onChangeText={(password) => {
-            setPassword(password);
-          }}
-        ></TextInput>
-        <Ionicons
-          name={passwordVisible ? "eye-off" : "eye"}
-          size={24}
-          color="black"
-          style={styles.eyeIcon}
-          onPress={() => {
-            setPasswordVisible(!passwordVisible);
-          }}
-        />
-        <TextInput
-          placeholder="password"
-          textContentType="password"
-          secureTextEntry={passwordConfirmationVisible ? false : true}
-          style={styles.input}
-          onChangeText={(passwordConfirmation) => {
-            setPasswordConfirmation(passwordConfirmation);
-          }}
-        ></TextInput>
-        <Ionicons
-          name={passwordConfirmationVisible ? "eye-off" : "eye"}
-          size={24}
-          color="black"
-          style={styles.eyeIcon2}
-          onPress={() => {
-            setPasswordConfirmationVisible(!passwordConfirmationVisible);
-          }}
-        />
-        {errorMessage ? (
-          <Text style={styles.errorMessage}>{errorMessage}</Text>
-        ) : (
-          <Text style={styles.errorMessage}></Text>
-        )}
-        {loading ? (
-          <TouchableOpacity
-            style={styles.signupBtnDisactivated}
-            disabled={true}
-          >
-            <Text>Sign in</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.signupBtn} onPress={handleSubmit}>
-            <Text>Sign up</Text>
-          </TouchableOpacity>
-        )}
-        {loading ? (
-          <TouchableOpacity disabled={true}>
-            <Text>Already have an account? Sign in</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity onPress={() => navigation.navigate("Sign In")}>
-            <Text>Already have an account? Sign in</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </KeyboardAwareScrollView>
+          <Text>Sign up</Text>
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color="purple"
+              style={{ marginTop: 200, position: "absolute" }}
+            />
+          ) : null}
+          <TextInput
+            placeholder="email"
+            textContentType="emailAddress"
+            style={styles.input}
+            value={email}
+            autoCapitalize="none"
+            onChangeText={(email) => {
+              setEmail(email);
+            }}
+          ></TextInput>
+          <TextInput
+            placeholder="username"
+            textContentType="username"
+            style={styles.input}
+            value={username}
+            autoCapitalize="none"
+            onChangeText={(username) => {
+              setUsername(username);
+            }}
+          ></TextInput>
+          <TextInput
+            placeholder="Describe yourself in a few words..."
+            style={styles.description}
+            value={description}
+            onChangeText={(description) => {
+              setDescription(description);
+            }}
+          ></TextInput>
+          <TextInput
+            placeholder="password"
+            textContentType="password"
+            secureTextEntry={passwordVisible ? false : true}
+            style={styles.input}
+            value={password}
+            autoCapitalize="none"
+            onChangeText={(password) => {
+              setPassword(password);
+            }}
+          ></TextInput>
+          <Ionicons
+            name={passwordVisible ? "eye-off" : "eye"}
+            size={24}
+            color="black"
+            style={styles.eyeIcon}
+            autoCapitalize="none"
+            onPress={() => {
+              setPasswordVisible(!passwordVisible);
+            }}
+          />
+          <TextInput
+            placeholder="password"
+            textContentType="password"
+            secureTextEntry={passwordConfirmationVisible ? false : true}
+            style={styles.input}
+            value={passwordConfirmation}
+            onChangeText={(passwordConfirmation) => {
+              setPasswordConfirmation(passwordConfirmation);
+            }}
+          ></TextInput>
+          <Ionicons
+            name={passwordConfirmationVisible ? "eye-off" : "eye"}
+            size={24}
+            color="black"
+            style={styles.eyeIcon2}
+            onPress={() => {
+              setPasswordConfirmationVisible(!passwordConfirmationVisible);
+            }}
+          />
+          {errorMessage ? (
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          ) : (
+            <Text style={styles.errorMessage}></Text>
+          )}
+          {loading ? (
+            <TouchableOpacity
+              style={styles.signupBtnDisactivated}
+              disabled={true}
+            >
+              <Text>Sign in</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.signupBtn} onPress={handleSubmit}>
+              <Text>Sign up</Text>
+            </TouchableOpacity>
+          )}
+          {loading ? (
+            <TouchableOpacity disabled={true}>
+              <Text>Already have an account? Sign in</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => navigation.navigate("Sign In")}>
+              <Text>Already have an account? Sign in</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </KeyboardAwareScrollView>
+    </ScrollView>
   );
 };
 
