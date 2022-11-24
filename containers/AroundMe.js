@@ -1,14 +1,13 @@
 import { Text, ActivityIndicator, StyleSheet, Dimensions } from "react-native";
 import * as Location from "expo-location";
 import { useState, useEffect } from "react";
-import MapView, { Marker } from "react-native-maps";
-import axios from "axios";
+
+import MapAroundMe from "../components/MapAroundMe";
 
 const AroundMe = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(false);
-  const [coordinates, setCoordinates] = useState();
-  const [aroundMe, setAroundMe] = useState();
+  const [coordinates, setCoordinates] = useState(null);
 
   useEffect(() => {
     const askPermission = async () => {
@@ -21,17 +20,6 @@ const AroundMe = () => {
             longitude: location.coords.longitude,
           };
           setCoordinates(obj);
-
-          if (coordinates) {
-            try {
-              const response = await axios.get(
-                `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${obj.latitude}&longitude=${obj.longitude}`
-              );
-              setAroundMe(response.data);
-            } catch (error) {
-              console.log(error);
-            }
-          }
         } else {
           setErrorMessage(true);
         }
@@ -53,28 +41,7 @@ const AroundMe = () => {
   ) : errorMessage ? (
     <Text>Permission refusée</Text>
   ) : (
-    <MapView
-      showsUserLocation={true}
-      initialRegion={{
-        latitude: coordinates.latitude,
-        longitude: coordinates.longitude,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
-      }}
-      style={styles.map}
-    >
-      {aroundMe.map((appart) => {
-        return (
-          <Marker
-            key={appart._id}
-            coordinate={{
-              latitude: appart.location[1],
-              longitude: appart.location[0],
-            }}
-          />
-        );
-      })}
-    </MapView>
+    <MapAroundMe coordinates={coordinates} />
   );
 };
 

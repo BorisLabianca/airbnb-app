@@ -79,6 +79,7 @@ export default function App() {
                       <Ionicons name={"ios-home"} size={size} color={color} />
                     ),
                     headerTitle: (props) => <LogoTitle {...props} />,
+                    headerTitleAlign: "center",
                   }}
                 >
                   {() => (
@@ -114,6 +115,7 @@ export default function App() {
                       />
                     ),
                     headerTitle: (props) => <LogoTitle {...props} />,
+                    headerTitleAlign: "center",
                   }}
                 />
 
@@ -126,6 +128,7 @@ export default function App() {
                       <Octicons name={"person"} size={size} color={color} />
                     ),
                     headerTitle: (props) => <LogoTitle {...props} />,
+                    headerTitleAlign: "center",
                   }}
                 />
               </Tab.Navigator>
