@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import SwiperWithRenderItems from "../components/SwiperWithRenderItems";
+import MapView, { Marker } from "react-native-maps";
 
 const RoomScreen = ({ route }) => {
   // const route = useRoute();
@@ -20,6 +21,8 @@ const RoomScreen = ({ route }) => {
   const [roomData, setRoomData] = useState();
   const [fullDesc, setFullDesc] = useState(false);
   const [photos, setPhotos] = useState([]);
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
   // console.log(route.params.id);
   useEffect(() => {
     const fetchRoom = async () => {
@@ -27,12 +30,16 @@ const RoomScreen = ({ route }) => {
         const response = await axios.get(
           `https://express-airbnb-api.herokuapp.com/rooms/${route.params.id}`
         );
-        // console.log(response.data);
         setRoomData(response.data);
 
+        // console.log(longitude);
+
+        setLatitude(response.data.location[1]);
+        console.log(response.data.location[1]);
+        setLongitude(response.data.location[0]);
         setLoading(false);
       } catch (error) {
-        console.log(error.response);
+        console.log(error);
       }
     };
     fetchRoom();
@@ -52,7 +59,6 @@ const RoomScreen = ({ route }) => {
     }
   }
 
-  // console.log(photos);
   return loading ? (
     <ActivityIndicator
       size="large"
@@ -109,6 +115,24 @@ const RoomScreen = ({ route }) => {
           <Ionicons name="caret-down-sharp" size={20} color="#757575" />
         </TouchableOpacity>
       )}
+      <MapView
+        initialRegion={{
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        }}
+        style={styles.map}
+      >
+        <MapView.Marker
+          coordinate={{
+            latitude: latitude,
+            longitude: longitude,
+          }}
+          title={roomData.title}
+          description={roomData.description}
+        />
+      </MapView>
     </ScrollView>
   );
 };
@@ -142,6 +166,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 22,
     fontWeight: "500",
+    alignItems: "center",
+    justifyContent: "center",
   },
   subRoomPicPart: {
     flexDirection: "row",
@@ -169,7 +195,7 @@ const styles = StyleSheet.create({
   user: {
     height: 80,
     width: 80,
-    borderRadius: "50%",
+    borderRadius: 80,
   },
   description: {
     paddingHorizontal: 20,
@@ -186,6 +212,10 @@ const styles = StyleSheet.create({
     color: "#757575",
     fontSize: 15,
     marginRight: -15,
+  },
+  map: {
+    height: 300,
+    width: Dimensions.get("window").width,
   },
 });
 

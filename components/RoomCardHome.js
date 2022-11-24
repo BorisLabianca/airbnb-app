@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   user: {
     height: 80,
     width: 80,
-    borderRadius: "50%",
+    borderRadius: 80,
   },
 });
 
