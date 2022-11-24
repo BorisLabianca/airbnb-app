@@ -1,14 +1,14 @@
 import { Text, ActivityIndicator, StyleSheet, Dimensions } from "react-native";
 import * as Location from "expo-location";
 import { useState, useEffect } from "react";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import axios from "axios";
 
 const AroundMe = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(false);
   const [coordinates, setCoordinates] = useState();
-  const [arounMe, setAroundMe] = useState();
+  const [aroundMe, setAroundMe] = useState();
 
   useEffect(() => {
     const askPermission = async () => {
@@ -21,20 +21,17 @@ const AroundMe = () => {
             longitude: location.coords.longitude,
           };
           setCoordinates(obj);
+
           if (coordinates) {
-            const fetchAround = async () => {
-              try {
-                const response = await axios.get(
-                  `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${obj.latitude}&longitude=${obj.longitude}`
-                );
-                setAroundMe(response.data);
-              } catch (error) {
-                console.log(error);
-              }
-            };
-            fetchAround();
+            try {
+              const response = await axios.get(
+                `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${obj.latitude}&longitude=${obj.longitude}`
+              );
+              setAroundMe(response.data);
+            } catch (error) {
+              console.log(error);
+            }
           }
-          console.log(arounMe);
         } else {
           setErrorMessage(true);
         }
@@ -65,7 +62,19 @@ const AroundMe = () => {
         longitudeDelta: 0.05,
       }}
       style={styles.map}
-    ></MapView>
+    >
+      {aroundMe.map((appart) => {
+        return (
+          <Marker
+            key={appart._id}
+            coordinate={{
+              latitude: appart.location[1],
+              longitude: appart.location[0],
+            }}
+          />
+        );
+      })}
+    </MapView>
   );
 };
 

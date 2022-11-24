@@ -35,7 +35,7 @@ const RoomScreen = ({ route }) => {
         // console.log(longitude);
 
         setLatitude(response.data.location[1]);
-        console.log(response.data.location[1]);
+        // console.log(response.data.location[1]);
         setLongitude(response.data.location[0]);
         setLoading(false);
       } catch (error) {
@@ -124,7 +124,7 @@ const RoomScreen = ({ route }) => {
         }}
         style={styles.map}
       >
-        <MapView.Marker
+        <Marker
           coordinate={{
             latitude: latitude,
             longitude: longitude,
