@@ -14,7 +14,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 
-const SignInScreen = ({ setToken }) => {
+const SignInScreen = ({ handleToken }) => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState();
@@ -40,7 +40,7 @@ const SignInScreen = ({ setToken }) => {
       );
 
       // console.log(response.data);
-      setToken(response.data.token);
+      handleToken(response.data.token);
       setLoading(false);
       // alert("Vous êtes connecté.");
     } catch (error) {

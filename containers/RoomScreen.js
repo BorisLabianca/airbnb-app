@@ -8,15 +8,14 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import SwiperWithRenderItems from "../components/SwiperWithRenderItems";
-import SwiperFlatList from "react-native-swiper-flatlist";
 
-const RoomScreen = () => {
-  const route = useRoute();
+const RoomScreen = ({ route }) => {
+  // const route = useRoute();
+  // console.log(route);
   const [loading, setLoading] = useState(true);
   const [roomData, setRoomData] = useState();
   const [fullDesc, setFullDesc] = useState(false);
@@ -170,7 +169,7 @@ const styles = StyleSheet.create({
   user: {
     height: 80,
     width: 80,
-    // borderRadius: "50%",
+    borderRadius: "50%",
   },
   description: {
     paddingHorizontal: 20,

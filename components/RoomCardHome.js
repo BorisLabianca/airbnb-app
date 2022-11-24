@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,38 +20,43 @@ const RoomCardHome = ({
   roomId,
 }) => {
   const navigation = useNavigation();
-  const rating = [];
-  for (let i = 0; i < 5; i++) {
-    if (i < ratings) {
-      rating.push(
-        <Ionicons name="star-sharp" size={22} color="#FFB000" key={i} />
-      );
-    } else {
-      rating.push(
-        <Ionicons name="star-sharp" size={22} color="#BBBBBB" key={i} />
-      );
+  const starRating = (ratings) => {
+    const rating = [];
+    for (let i = 0; i < 5; i++) {
+      if (i < ratings) {
+        rating.push(
+          <Ionicons name="star-sharp" size={22} color="#FFB000" key={i} />
+        );
+      } else {
+        rating.push(
+          <Ionicons name="star-sharp" size={22} color="#BBBBBB" key={i} />
+        );
+      }
     }
-  }
+    return rating;
+  };
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => navigation.navigate("Room", { id: roomId })}
     >
-      <Image
+      <ImageBackground
         source={{ uri: image }}
         style={styles.mainPic}
         resizeMode="cover"
-      />
-      <View style={styles.priceContainer}>
-        <Text style={styles.priceText}>{price} €</Text>
-      </View>
+      >
+        <View style={styles.priceContainer}>
+          <Text style={styles.priceText}>{price} €</Text>
+        </View>
+      </ImageBackground>
+
       <View style={styles.subRoomPicPart}>
         <View style={styles.titleNInfo}>
           <Text style={styles.title} numberOfLines={1}>
             {title}
           </Text>
           <View style={styles.stars}>
-            {rating}
+            {starRating(ratings)}
             <Text style={styles.reviewNumber}>{reviews} reviews</Text>
           </View>
         </View>
@@ -77,7 +83,7 @@ const styles = StyleSheet.create({
     width: 100,
     backgroundColor: "black",
     position: "absolute",
-    top: 130,
+    top: 120,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -111,7 +117,7 @@ const styles = StyleSheet.create({
   user: {
     height: 80,
     width: 80,
-    // borderRadius: "50%",
+    borderRadius: "50%",
   },
 });
 

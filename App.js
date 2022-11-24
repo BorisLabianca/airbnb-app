@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useState, useEffect } from "react";
-import { StyleSheet, ActivityIndicator, Dimensions } from "react-native";
+import { StyleSheet, ActivityIndicator, Dimensions, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -19,7 +19,14 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
-
+  function LogoTitle() {
+    return (
+      <Image
+        style={{ width: 30, height: 30 }}
+        source={require("./assets/airbnb_logo.png")}
+      />
+    );
+  }
   const handleToken = async (token) => {
     if (token) {
       await AsyncStorage.setItem("token", token);
@@ -54,10 +61,10 @@ export default function App() {
         {!token ? (
           <>
             <Stack.Screen name="Sign In">
-              {() => <SignInScreen setToken={setToken} />}
+              {() => <SignInScreen handleToken={handleToken} />}
             </Stack.Screen>
             <Stack.Screen name="Sign Up">
-              {() => <SignUpScreen setToken={setToken} />}
+              {() => <SignUpScreen handleToken={handleToken} />}
             </Stack.Screen>
           </>
         ) : (
@@ -71,31 +78,32 @@ export default function App() {
                     tabBarIcon: ({ color, size }) => (
                       <Ionicons name={"ios-home"} size={size} color={color} />
                     ),
+                    headerTitle: (props) => <LogoTitle {...props} />,
                   }}
                 >
                   {() => (
                     <Stack.Navigator>
                       <Stack.Screen
                         name="Home"
+                        component={HomeScreen}
                         options={{
                           headerShown: false,
                         }}
-                      >
-                        {() => <HomeScreen />}
-                      </Stack.Screen>
+                      />
+
                       <Stack.Screen
                         name="Room"
+                        component={RoomScreen}
                         options={{
                           title: "Room",
                         }}
-                      >
-                        {() => <RoomScreen />}
-                      </Stack.Screen>
+                      />
                     </Stack.Navigator>
                   )}
                 </Tab.Screen>
                 <Tab.Screen
                   name="TabAroundMe"
+                  component={AroundMe}
                   options={{
                     tabBarLabel: "Around me",
                     tabBarIcon: ({ color, size }) => (
@@ -105,21 +113,21 @@ export default function App() {
                         color={color}
                       />
                     ),
+                    headerTitle: (props) => <LogoTitle {...props} />,
                   }}
-                >
-                  {() => <AroundMe />}
-                </Tab.Screen>
+                />
+
                 <Tab.Screen
                   name="TabProfile"
+                  component={Profile}
                   options={{
                     tabBarLabel: "My profile",
                     tabBarIcon: ({ color, size }) => (
                       <Octicons name={"person"} size={size} color={color} />
                     ),
+                    headerTitle: (props) => <LogoTitle {...props} />,
                   }}
-                >
-                  {() => <Profile />}
-                </Tab.Screen>
+                />
               </Tab.Navigator>
             )}
           </Stack.Screen>

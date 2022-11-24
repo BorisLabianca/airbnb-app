@@ -5,13 +5,14 @@ const SwiperWithRenderItems = ({ roomData }) => {
   for (let i = 0; i < roomData.photos.length; i++) {
     photos.push(roomData.photos[i].url);
   }
-  console.log(photos);
+  // console.log(photos);
   return (
     <SwiperFlatList
       autoplay
       autoplayDelay={3}
       autoplayLoop
       index={0}
+      showPagination
       data={photos}
       renderItem={({ item }) => (
         <Image source={{ uri: item }} style={styles.child} />

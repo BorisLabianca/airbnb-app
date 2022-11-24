@@ -15,7 +15,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 
-const SignUpScreen = ({ setToken }) => {
+const SignUpScreen = ({ handleToken }) => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -59,7 +59,7 @@ const SignUpScreen = ({ setToken }) => {
       );
 
       console.log(response.data.token);
-      setToken(response.data.token);
+      handleToken(response.data.token);
       setLoading(false);
       // alert("Vous êtes désormais inscrit.");
     } catch (error) {
