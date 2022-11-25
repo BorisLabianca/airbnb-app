@@ -14,7 +14,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 
-const SignInScreen = ({ handleToken }) => {
+const SignInScreen = ({ handleTokenAndUserId }) => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -40,7 +40,7 @@ const SignInScreen = ({ handleToken }) => {
       );
 
       // console.log(response.data);
-      handleToken(response.data.token);
+      handleTokenAndUserId(response.data.token, response.data.id);
       setLoading(false);
       // alert("Vous êtes connecté.");
     } catch (error) {
@@ -107,11 +107,15 @@ const SignInScreen = ({ handleToken }) => {
             style={styles.signInBtnDisactivated}
             disabled={true}
           >
-            <Text>Sign in</Text>
+            <Text style={styles.btnText}>Sign in</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.signInBtn} onPress={handleSubmit}>
-            <Text>Sign in</Text>
+          <TouchableOpacity
+            style={styles.signInBtn}
+            activeOpacity={0.7}
+            onPress={handleSubmit}
+          >
+            <Text style={styles.btnText}>Sign in</Text>
           </TouchableOpacity>
         )}
         {loading ? (
@@ -119,7 +123,10 @@ const SignInScreen = ({ handleToken }) => {
             <Text>No account? Register</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity onPress={() => navigation.navigate("Sign Up")}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate("Sign Up")}
+          >
             <Text>No account? Register</Text>
           </TouchableOpacity>
         )}
@@ -190,6 +197,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 10,
+  },
+  btnText: {
+    color: "#717171",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 

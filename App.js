@@ -19,6 +19,7 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
+  const [userId, setUserId] = useState(null);
   function LogoTitle() {
     return (
       <Image
@@ -27,19 +28,24 @@ export default function App() {
       />
     );
   }
-  const handleToken = async (token) => {
-    if (token) {
+  const handleTokenAndUserId = async (token, userId) => {
+    if (token && userId) {
       await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("userId", userId);
     } else {
       await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("userId");
     }
     setToken(token);
+    setUserId(userId);
   };
 
   useEffect(() => {
     const bootstrapAsync = async () => {
       const token = await AsyncStorage.getItem("token");
+      const userId = await AsyncStorage.getItem("userId");
       setToken(token);
+      setUserId(userId);
       setLoading(false);
     };
     bootstrapAsync();
@@ -61,16 +67,25 @@ export default function App() {
         {!token ? (
           <>
             <Stack.Screen name="Sign In">
-              {() => <SignInScreen handleToken={handleToken} />}
+              {() => (
+                <SignInScreen handleTokenAndUserId={handleTokenAndUserId} />
+              )}
             </Stack.Screen>
             <Stack.Screen name="Sign Up">
-              {() => <SignUpScreen handleToken={handleToken} />}
+              {() => (
+                <SignUpScreen handleTokenAndUserId={handleTokenAndUserId} />
+              )}
             </Stack.Screen>
           </>
         ) : (
           <Stack.Screen name="TabNav" options={{ headerShown: false }}>
             {() => (
-              <Tab.Navigator>
+              <Tab.Navigator
+                screenOptions={{
+                  tabBarActiveTintColor: "#F9575C",
+                  tabBarInactiveTintColor: "gray",
+                }}
+              >
                 <Tab.Screen
                   name="TabHome"
                   options={{
@@ -104,7 +119,6 @@ export default function App() {
                 </Tab.Screen>
                 <Tab.Screen
                   name="TabAroundMe"
-                  component={AroundMe}
                   options={{
                     tabBarLabel: "Around me",
                     tabBarIcon: ({ color, size }) => (
@@ -117,11 +131,29 @@ export default function App() {
                     headerTitle: (props) => <LogoTitle {...props} />,
                     headerTitleAlign: "center",
                   }}
-                />
+                >
+                  {() => (
+                    <Stack.Navigator>
+                      <Stack.Screen
+                        name="Around me"
+                        component={AroundMe}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
 
+                      <Stack.Screen
+                        name="Room"
+                        component={RoomScreen}
+                        options={{
+                          title: "Room",
+                        }}
+                      />
+                    </Stack.Navigator>
+                  )}
+                </Tab.Screen>
                 <Tab.Screen
                   name="TabProfile"
-                  component={Profile}
                   options={{
                     tabBarLabel: "My profile",
                     tabBarIcon: ({ color, size }) => (
@@ -130,7 +162,15 @@ export default function App() {
                     headerTitle: (props) => <LogoTitle {...props} />,
                     headerTitleAlign: "center",
                   }}
-                />
+                >
+                  {() => (
+                    <Profile
+                      handleTokenAndUserId={handleTokenAndUserId}
+                      userId={userId}
+                      token={token}
+                    />
+                  )}
+                </Tab.Screen>
               </Tab.Navigator>
             )}
           </Stack.Screen>

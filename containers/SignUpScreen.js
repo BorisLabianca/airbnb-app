@@ -15,7 +15,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 
-const SignUpScreen = ({ handleToken }) => {
+const SignUpScreen = ({ handleTokenAndUserId }) => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -59,7 +59,7 @@ const SignUpScreen = ({ handleToken }) => {
       );
 
       console.log(response.data.token);
-      handleToken(response.data.token);
+      handleTokenAndUserId(response.data.token, response.data.id);
       setLoading(false);
       // alert("Vous êtes désormais inscrit.");
     } catch (error) {
@@ -171,11 +171,15 @@ const SignUpScreen = ({ handleToken }) => {
               style={styles.signupBtnDisactivated}
               disabled={true}
             >
-              <Text>Sign in</Text>
+              <Text style={styles.btnText}>Sign in</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={styles.signupBtn} onPress={handleSubmit}>
-              <Text>Sign up</Text>
+            <TouchableOpacity
+              style={styles.signupBtn}
+              activeOpacity={0.7}
+              onPress={handleSubmit}
+            >
+              <Text style={styles.btnText}>Sign up</Text>
             </TouchableOpacity>
           )}
           {loading ? (
@@ -183,7 +187,10 @@ const SignUpScreen = ({ handleToken }) => {
               <Text>Already have an account? Sign in</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={() => navigation.navigate("Sign In")}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate("Sign In")}
+            >
               <Text>Already have an account? Sign in</Text>
             </TouchableOpacity>
           )}
@@ -264,6 +271,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 10,
+  },
+  btnText: {
+    color: "#717171",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 export default SignUpScreen;
