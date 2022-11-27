@@ -66,6 +66,8 @@ const RoomCardHome = ({
   );
 };
 
+export default RoomCardHome;
+
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
@@ -120,5 +122,3 @@ const styles = StyleSheet.create({
     borderRadius: 80,
   },
 });
-
-export default RoomCardHome;

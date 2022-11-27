@@ -33,7 +33,7 @@ const HomeScreen = () => {
     <ActivityIndicator
       size="large"
       color="purple"
-      style={{ marginTop: Dimensions.get("window").height / 2 }}
+      style={{ marginTop: Dimensions.get("window").height / 2 - 100 }}
     />
   ) : (
     <View style={styles.container}>
@@ -56,6 +56,8 @@ const HomeScreen = () => {
   );
 };
 
+export default HomeScreen;
+
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
@@ -66,5 +68,3 @@ const styles = StyleSheet.create({
     width: 400,
   },
 });
-
-export default HomeScreen;

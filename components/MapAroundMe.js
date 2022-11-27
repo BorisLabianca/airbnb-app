@@ -29,7 +29,7 @@ const MapAroundMe = ({ coordinates }) => {
     <ActivityIndicator
       size="large"
       color="purple"
-      style={{ marginTop: Dimensions.get("window").height / 2 }}
+      style={{ marginTop: Dimensions.get("window").height / 2 - 100 }}
     />
   ) : (
     <MapView
@@ -61,10 +61,12 @@ const MapAroundMe = ({ coordinates }) => {
     </MapView>
   );
 };
+
+export default MapAroundMe;
+
 const styles = StyleSheet.create({
   map: {
     height: Dimensions.get("window").height,
     width: Dimensions.get("window").width,
   },
 });
-export default MapAroundMe;

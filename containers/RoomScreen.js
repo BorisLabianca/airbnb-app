@@ -63,7 +63,7 @@ const RoomScreen = ({ route }) => {
     <ActivityIndicator
       size="large"
       color="purple"
-      style={{ marginTop: Dimensions.get("window").height / 2 }}
+      style={{ marginTop: Dimensions.get("window").height / 2 - 100 }}
     />
   ) : (
     <ScrollView style={styles.container}>
@@ -136,6 +136,8 @@ const RoomScreen = ({ route }) => {
     </ScrollView>
   );
 };
+
+export default RoomScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -218,5 +220,3 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
   },
 });
-
-export default RoomScreen;

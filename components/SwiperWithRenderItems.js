@@ -20,6 +20,9 @@ const SwiperWithRenderItems = ({ roomData }) => {
     />
   );
 };
+
+export default SwiperWithRenderItems;
+
 const styles = StyleSheet.create({
   child: {
     width: Dimensions.get("window").width,
@@ -27,4 +30,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-export default SwiperWithRenderItems;

@@ -69,7 +69,6 @@ const SignInScreen = ({ handleTokenAndUserId }) => {
         ) : null}
         <TextInput
           placeholder="email"
-          textContentType="emailAddress"
           style={styles.input}
           value={email}
           autoCapitalize="none"
@@ -79,7 +78,6 @@ const SignInScreen = ({ handleTokenAndUserId }) => {
         ></TextInput>
         <TextInput
           placeholder="password"
-          textContentType="password"
           secureTextEntry={passwordVisible ? false : true}
           style={styles.input}
           value={password}
@@ -134,6 +132,9 @@ const SignInScreen = ({ handleTokenAndUserId }) => {
     </KeyboardAwareScrollView>
   );
 };
+
+export default SignInScreen;
+
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "white",
@@ -204,5 +205,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-
-export default SignInScreen;

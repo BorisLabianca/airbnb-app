@@ -21,6 +21,34 @@ const Profile = ({ handleTokenAndUserId, userId, token }) => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
+  const [pictureUpdated, setPictureUpdated] = useState(false);
+  const [infoUpdated, setInfoUpdated] = useState(false);
+
+  const fetchUserInfo = async () => {
+    try {
+      const userInfo = await axios.get(
+        `https://express-airbnb-api.herokuapp.com/user/${userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // console.log(userInfo.data);
+      if (userInfo.data?.photo?.url) {
+        setAvatar(userInfo.data.photo.url);
+      }
+      setEmail(userInfo.data.email);
+      setUsername(userInfo.data.username);
+      if (userInfo.data.description) {
+        setDescription(userInfo.data.description);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      alert("Une erreur s'est produite.");
+    }
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
 
   const getPermissionAndGetPicture = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -33,6 +61,7 @@ const Profile = ({ handleTokenAndUserId, userId, token }) => {
         alert("Pas de photo sélectionnée.");
       } else {
         setAvatar(result.assets[0].uri);
+        setPictureUpdated(true);
       }
     } else {
       alert("Permission refusée.");
@@ -44,39 +73,76 @@ const Profile = ({ handleTokenAndUserId, userId, token }) => {
     if (status === "granted") {
       const result = await ImagePicker.launchCameraAsync();
       if (result.canceled === true) {
-        alert("Pas de photo sélectionnée.");
+        alert("Pas de photo prise.");
       } else {
         setAvatar(result.assets[0].uri);
+        setPictureUpdated(true);
       }
     } else {
       alert("Permission refusée.");
     }
   };
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const userInfo = await axios.get(
-          `https://express-airbnb-api.herokuapp.com/user/${userId}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        // console.log(userInfo.data.description);
-        if (userInfo.data.photo.url) {
-          setAvatar(userInfo.data.photo.url);
+  const handleUpdate = async () => {
+    if (pictureUpdated || infoUpdated) {
+      setLoading(true);
+      if (pictureUpdated) {
+        try {
+          const picArray = avatar.split(".");
+          const formData = new FormData();
+          formData.append("photo", {
+            uri: avatar,
+            name: `my-picture.${picArray[picArray.length - 1]}`,
+            type: `image/${picArray[picArray.length - 1]}`,
+          });
+          const response = await axios.put(
+            "https://express-airbnb-api.herokuapp.com/user/upload_picture",
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          if (!response.data) {
+            alert("Une erreur s'est produite, veuillez réessayer.");
+          }
+        } catch (error) {
+          alert("Une erreur s'est produite, veuillez réessayer.");
         }
-        setEmail(userInfo.data.email);
-        setUsername(userInfo.data.username);
-        if (userInfo.data.description) {
-          setDescription(userInfo.data.description);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
       }
-    };
-    fetchUserInfo();
-  }, []);
 
+      if (infoUpdated) {
+        try {
+          const response = await axios.put(
+            "https://express-airbnb-api.herokuapp.com/user/update",
+            { email: email, username: username, description: description },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          if (!response.data) {
+            alert("Une erreur s'est produite, veuillez réessayer.");
+          }
+        } catch (error) {
+          alert("Une erreur s'est produite, veuillez réessayer.");
+        }
+      }
+      alert("Votre profile à été mis à jour.");
+      setLoading(false);
+      fetchUserInfo();
+    } else {
+      alert(
+        "Vous devez faire des modifications pour pouvoir mettre à jour votre profile."
+      );
+    }
+  };
+
+  // console.log(description);
   return loading ? (
     <ActivityIndicator
       size="large"
@@ -114,6 +180,7 @@ const Profile = ({ handleTokenAndUserId, userId, token }) => {
         value={email}
         onChangeText={(text) => {
           setEmail(text);
+          setInfoUpdated(true);
         }}
       ></TextInput>
       <TextInput
@@ -122,18 +189,25 @@ const Profile = ({ handleTokenAndUserId, userId, token }) => {
         value={username}
         onChangeText={(text) => {
           setUsername(text);
+          setInfoUpdated(true);
         }}
       ></TextInput>
       <TextInput
         placeholder="Your description"
         style={styles.description}
         multiline={true}
+        textAlignVertical="top"
         value={description}
         onChangeText={(text) => {
           setDescription(text);
+          setInfoUpdated(true);
         }}
       ></TextInput>
-      <TouchableOpacity style={styles.updateBtn} activeOpacity={0.7}>
+      <TouchableOpacity
+        style={styles.updateBtn}
+        activeOpacity={0.7}
+        onPress={handleUpdate}
+      >
         <Text style={styles.btnText}>Update</Text>
       </TouchableOpacity>
       <TouchableOpacity

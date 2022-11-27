@@ -13,6 +13,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 
 const SignUpScreen = ({ handleTokenAndUserId }) => {
@@ -21,6 +23,7 @@ const SignUpScreen = ({ handleTokenAndUserId }) => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
+  const [avatar, setAvatar] = useState(null);
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -28,6 +31,37 @@ const SignUpScreen = ({ handleTokenAndUserId }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordConfirmationVisible, setPasswordConfirmationVisible] =
     useState(false);
+
+  const getPermissionAndGetPicture = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status === "granted") {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+      });
+      if (result.canceled === true) {
+        alert("Pas de photo sélectionnée.");
+      } else {
+        setAvatar(result.assets[0].uri);
+      }
+    } else {
+      alert("Permision refusée.");
+    }
+  };
+
+  const getPermissionAndTakePicture = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status === "granted") {
+      const result = await ImagePicker.launchCameraAsync();
+      if (result.canceled === true) {
+        alert("Pas de photo prise.");
+      } else {
+        setAvatar(result.assets[0].uri);
+      }
+    } else {
+      alert("Permission refusée.");
+    }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -58,7 +92,7 @@ const SignUpScreen = ({ handleTokenAndUserId }) => {
         }
       );
 
-      console.log(response.data.token);
+      // console.log(response.data.token);
       handleTokenAndUserId(response.data.token, response.data.id);
       setLoading(false);
       // alert("Vous êtes désormais inscrit.");
@@ -95,7 +129,6 @@ const SignUpScreen = ({ handleTokenAndUserId }) => {
           ) : null}
           <TextInput
             placeholder="email"
-            textContentType="emailAddress"
             style={styles.input}
             value={email}
             autoCapitalize="none"
@@ -105,7 +138,6 @@ const SignUpScreen = ({ handleTokenAndUserId }) => {
           ></TextInput>
           <TextInput
             placeholder="username"
-            textContentType="username"
             style={styles.input}
             value={username}
             autoCapitalize="none"
@@ -116,14 +148,16 @@ const SignUpScreen = ({ handleTokenAndUserId }) => {
           <TextInput
             placeholder="Describe yourself in a few words..."
             style={styles.description}
+            multiline={true}
+            textAlignVertical="top"
             value={description}
             onChangeText={(description) => {
               setDescription(description);
             }}
           ></TextInput>
+
           <TextInput
             placeholder="password"
-            textContentType="password"
             secureTextEntry={passwordVisible ? false : true}
             style={styles.input}
             value={password}
@@ -144,7 +178,6 @@ const SignUpScreen = ({ handleTokenAndUserId }) => {
           />
           <TextInput
             placeholder="password"
-            textContentType="password"
             secureTextEntry={passwordConfirmationVisible ? false : true}
             style={styles.input}
             value={passwordConfirmation}
@@ -200,6 +233,8 @@ const SignUpScreen = ({ handleTokenAndUserId }) => {
   );
 };
 
+export default SignUpScreen;
+
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "white",
@@ -216,6 +251,7 @@ const styles = StyleSheet.create({
   logo: {
     height: 80,
     width: 80,
+    marginBottom: 10,
   },
   input: {
     borderBottomColor: "#FFBAC0",
@@ -230,18 +266,35 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     width: "100%",
     height: 100,
-    paddingBottom: 10,
-    marginBottom: 20,
+    padding: 10,
+    marginBottom: 40,
+    marginTop: 10,
     fontSize: 15,
+  },
+  photoRelated: { flexDirection: "row", marginBottom: 50 },
+  avatarView: {
+    height: 150,
+    width: 150,
+    borderRadius: 150,
+    borderColor: "#FFBAC0",
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 20,
+  },
+  avatar: {
+    height: 135,
+    width: 135,
+    borderRadius: 150,
   },
   eyeIcon: {
     position: "absolute",
-    top: Platform.OS === "ios" ? 325 : 355,
+    top: Platform.OS === "ios" ? 365 : 395,
     left: Platform.OS === "ios" ? 320 : 340,
   },
   eyeIcon2: {
     position: "absolute",
-    top: Platform.OS === "ios" ? 375 : 415,
+    top: Platform.OS === "ios" ? 415 : 455,
     left: Platform.OS === "ios" ? 320 : 340,
   },
   errorMessage: {
@@ -278,4 +331,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-export default SignUpScreen;
