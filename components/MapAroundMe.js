@@ -13,7 +13,7 @@ const MapAroundMe = ({ coordinates }) => {
     const fetchAround = async () => {
       try {
         const roomsAround = await axios.get(
-          `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}`
+          `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/rooms/around?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}`
         );
         // console.log(roomsAround.data);
         setAroundMe(roomsAround.data);

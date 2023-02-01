@@ -27,7 +27,7 @@ const Profile = ({ handleTokenAndUserId, userId, token }) => {
   const fetchUserInfo = async () => {
     try {
       const userInfo = await axios.get(
-        `https://express-airbnb-api.herokuapp.com/user/${userId}`,
+        `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/${userId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       // console.log(userInfo.data);
@@ -96,7 +96,7 @@ const Profile = ({ handleTokenAndUserId, userId, token }) => {
             type: `image/${picArray[picArray.length - 1]}`,
           });
           const response = await axios.put(
-            "https://express-airbnb-api.herokuapp.com/user/upload_picture",
+            "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/upload_picture",
             formData,
             {
               headers: {
@@ -116,7 +116,7 @@ const Profile = ({ handleTokenAndUserId, userId, token }) => {
       if (infoUpdated) {
         try {
           const response = await axios.put(
-            "https://express-airbnb-api.herokuapp.com/user/update",
+            "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update",
             { email: email, username: username, description: description },
             {
               headers: {

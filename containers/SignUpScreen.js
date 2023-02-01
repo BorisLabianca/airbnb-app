@@ -83,7 +83,7 @@ const SignUpScreen = ({ handleTokenAndUserId }) => {
 
       setLoading(true);
       const response = await axios.post(
-        "https://express-airbnb-api.herokuapp.com/user/sign_up",
+        "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/sign_up",
         {
           email: email,
           username: username,

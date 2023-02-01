@@ -18,7 +18,7 @@ const HomeScreen = () => {
     const fetchRooms = async () => {
       try {
         const response = await axios.get(
-          "https://express-airbnb-api.herokuapp.com/rooms"
+          "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/rooms"
         );
         // console.log(response.data[0]._id);
         setRooms(response.data);
